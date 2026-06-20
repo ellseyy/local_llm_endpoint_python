@@ -27,3 +27,19 @@ def init_db():
     
     conn.commit()
     conn.close()
+
+def log_request(log_data: dict):
+    with sqlite3.connect(settings.sqlite_path) as conn:
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            INSERT INTO requests (
+                id, created_at, route, status, backend, model, 
+                latency_ms_total, input_chars, output_chars, temperature, 
+                max_tokens, prompt_preview, response_preview, error_message
+            ) VALUES (
+                :id, :created_at, :route, :status, :backend, :model, 
+                :latency_ms_total, :input_chars, :output_chars, :temperature, 
+                :max_tokens, :prompt_preview, :response_preview, :error_message
+            )
+        """, log_data)
