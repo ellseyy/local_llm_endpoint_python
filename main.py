@@ -4,7 +4,18 @@ from datetime import datetime, timezone
 import time
 import httpx
 
-app=FastAPI()
+from contextlib import asynccontextmanager
+from database import init_db
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("🟢")
+    init_db()  
+    yield      
+    print("🔴")
+
+app=FastAPI(lifespan=lifespan)
 
 
 START_TIME = time.time()
